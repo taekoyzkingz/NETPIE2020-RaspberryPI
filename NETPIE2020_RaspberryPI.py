@@ -6,7 +6,6 @@ import paho.mqtt.client as mqtt
 import json
 import os
 
-# initial
 sensor = Adafruit_DHT.DHT11
 pin = 14
 
@@ -26,19 +25,16 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("@shadow/data/updated")
 
 def on_message(client, userdata, msg):
-    data_ = str(msg.payload).split(",")
-    data_led = data_[1].split("{")
-    data_led1 = data_led[1].split(":")
-    data_led2 = data_led1[1].split("}")
-    data_led3 = data_led2[0]
+    data_ = str(msg.payload).split(",") #b'{"deviceid":"085676f3-6c9d-44c3-a96f-c94f90412728","data":{"led":"on"},"rev":3,"modified":1579864929867}' 
+    data_led = data_[1].split("{")      #"led":"on"},"rev":3,"modified":1579864929867}'
+    data_led1 = data_led[1].split(":")  #{"on"},"rev""led":"on"},"rev":3,"modified":1579864929867}' 
+    data_led2 = data_led1[1].split("}") #"on"},"rev"
+    data_led3 = data_led2[0]            #"on"
     print(data_led3)
     if data_led3 == "\"on\"":
         GPIO.output(23, GPIO.HIGH)
     else:
         GPIO.output(23, GPIO.LOW)
-
-
-
 
 client = mqtt.Client(protocol=mqtt.MQTTv311,
                      client_id=CLIENT_ID, clean_session=True)
