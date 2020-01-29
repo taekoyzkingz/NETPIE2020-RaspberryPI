@@ -25,11 +25,6 @@ def on_connect(client, userdata, flags, rc):
         mqtt.connack_string(rc)))
     client.subscribe("@shadow/data/updated")
 
-
-def on_subscribe(client, userdata, mid, granted_qos):
-    print("I've subscribed")
-
-
 def on_message(client, userdata, msg):
     data_ = str(msg.payload).split(",")
     data_led = data_[1].split("{")
@@ -49,7 +44,6 @@ client = mqtt.Client(protocol=mqtt.MQTTv311,
                      client_id=CLIENT_ID, clean_session=True)
 client.username_pw_set(DEVICE_TOKEN)
 client.on_connect = on_connect
-client.on_subscribe = on_subscribe
 client.on_message = on_message
 client.connect(NETPIE_HOST, 1883)
 client.loop_start()
